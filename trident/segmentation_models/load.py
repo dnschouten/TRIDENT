@@ -1,4 +1,4 @@
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 import os
 import torch
 import torch.nn.functional as F
@@ -71,7 +71,7 @@ class HESTSegmenter(SegmentationModel):
         """
         super().__init__(**build_kwargs)
 
-    def _build(self) -> Tuple[nn.Module, transforms.Compose]:
+    def _build(self, weights_path: Optional[str] = None) -> Tuple[nn.Module, transforms.Compose]:
         """
         Build and load HESTSegmenter model.
 
@@ -84,14 +84,15 @@ class HESTSegmenter(SegmentationModel):
         from torchvision.models.segmentation import deeplabv3_resnet50
 
         model_ckpt_name = 'deeplabv3_seg_v4.ckpt'
-        weights_path = get_weights_path('seg', 'hest')
+        if weights_path is None:
+            weights_path = get_weights_path('seg', 'hest')
 
         # Check if a path is provided but doesn't exist
         if weights_path and not os.path.isfile(weights_path):
             raise FileNotFoundError(f"Expected checkpoint at '{weights_path}', but the file was not found.")
 
         # Initialize base model
-        model = deeplabv3_resnet50(weights=None)
+        model = deeplabv3_resnet50(weights=None, weights_backbone=None)
         model.classifier[4] = nn.Conv2d(256, 2, kernel_size=1, stride=1)
 
         if not weights_path:
@@ -185,7 +186,7 @@ class GrandQCArtifactSegmenter(SegmentationModel):
         """
         super().__init__(**build_kwargs)
 
-    def _build(self, remove_penmarks_only=False):
+    def _build(self, remove_penmarks_only: bool = False, weights_path: Optional[str] = None):
         """
         Load the GrandQC artifact removal segmentation model.
         Credit: https://www.nature.com/articles/s41467-024-54769-y
@@ -196,7 +197,8 @@ class GrandQCArtifactSegmenter(SegmentationModel):
         self.remove_penmarks_only = remove_penmarks_only  # ignore all other artifacts than penmakrs.
         model_ckpt_name = 'GrandQC_MPP1_state_dict.pth'
         encoder_name = 'timm-efficientnet-b0'
-        weights_path = get_weights_path('seg', 'grandqc_artifact')
+        if weights_path is None:
+            weights_path = get_weights_path('seg', 'grandqc_artifact')
 
         # Verify that user-provided weights_path is valid
         if weights_path and not os.path.isfile(weights_path):
@@ -275,7 +277,7 @@ class GrandQCSegmenter(SegmentationModel):
         """
         super().__init__(**build_kwargs)
 
-    def _build(self):
+    def _build(self, weights_path: Optional[str] = None):
         """
         Load the GrandQC tissue detection segmentation model.
         Credit: https://www.nature.com/articles/s41467-024-54769-y
@@ -284,7 +286,8 @@ class GrandQCSegmenter(SegmentationModel):
 
         model_ckpt_name = 'Tissue_Detection_MPP10.pth'
         encoder_name = 'timm-efficientnet-b0'
-        weights_path = get_weights_path('seg', 'grandqc') 
+        if weights_path is None:
+            weights_path = get_weights_path('seg', 'grandqc') 
 
         # Verify that user-provided weights_path is valid
         if weights_path and not os.path.isfile(weights_path):

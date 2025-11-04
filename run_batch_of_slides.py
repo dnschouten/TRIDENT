@@ -72,6 +72,16 @@ def build_parser() -> argparse.ArgumentParser:
                         help='Type of tissue vs background segmenter. Options are HEST or GrandQC.')
     parser.add_argument('--seg_conf_thresh', type=float, default=0.5, 
                     help='Confidence threshold to apply to binarize segmentation predictions. Lower this threhsold to retain more tissue. Defaults to 0.5. Try 0.4 as 2nd option.')
+    parser.add_argument(
+        '--seg_ckpt_path', type=str, default=None,
+        help=(
+            "Optional local path to a segmentation checkpoint file. "
+            "Use this to force local weights (e.g., offline clusters). If not provided, "
+            "models are resolved via the local registry or downloaded from Hugging Face. "
+            "You can also specify local paths via the model registry at "
+            "`./trident/segmentation_models/local_ckpts.json`."
+        )
+    )
     parser.add_argument('--remove_holes', action='store_true', default=False, 
                         help='Do you want to remove holes?')
     parser.add_argument('--remove_artifacts', action='store_true', default=False, 
@@ -196,6 +206,7 @@ def run_task(processor: Processor, args: argparse.Namespace) -> None:
         segmentation_model = segmentation_model_factory(
             args.segmenter,
             confidence_thresh=args.seg_conf_thresh,
+            weights_path=args.seg_ckpt_path,
         )
         if args.remove_artifacts or args.remove_penmarks:
             artifact_remover_model = segmentation_model_factory(

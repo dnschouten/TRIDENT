@@ -6,7 +6,7 @@
     "phikon": "",
     "resnet50": "",
     "gigapath": "",
-    "virchow": "/opt/ckpts/virchow",
+    "virchow": "/opt/hf_cache/virchow/pytorch_model.bin",
     "virchow2": "",
     "hoptimus0": "",
     "hoptimus1": "",

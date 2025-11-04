@@ -1,5 +1,5 @@
 {
     "chief": "./CHIEF",
     "madeleine": "./MADELEINE",
-    "prism": "/opt/ckpts/prism"
+    "prism": "/opt/hf_cache/prism"
 }
