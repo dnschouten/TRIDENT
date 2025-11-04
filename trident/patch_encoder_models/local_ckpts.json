@@ -6,7 +6,7 @@
     "phikon": "",
     "resnet50": "",
     "gigapath": "",
-    "virchow": "",
+    "virchow": "/opt/ckpts/virchow",
     "virchow2": "",
     "hoptimus0": "",
     "hoptimus1": "",

@@ -1,5 +1,5 @@
 {
-    "hest": "",
+    "hest": "/opt/ckpts/hest-tissue-seg/deeplabv3_seg_v4.ckpt",
     "grandqc": "",
     "grandqc_artifact": ""
 }
